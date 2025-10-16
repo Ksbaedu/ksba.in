@@ -1,0 +1,11 @@
+studentName,rollNumber,class,examType,subject1Name,subject1Marks,subject1Total,subject2Name,subject2Marks,subject2Total,subject3Name,subject3Marks,subject3Total,subject4Name,subject4Marks,subject4Total,subject5Name,subject5Marks,subject5Total
+John Doe,KS001,Class 10,Final Term,Mathematics,95,100,Science,88,100,English,92,100,Social Studies,85,100,Hindi,90,100
+Jane Smith,KS002,Class 10,Final Term,Mathematics,87,100,Science,91,100,English,89,100,Social Studies,82,100,Hindi,88,100
+Mike Johnson,KS003,Class 9,Mid Term,Mathematics,78,100,Science,82,100,English,85,100,Hindi,80,100,Social Studies,75,100
+Sarah Wilson,KS004,Class 9,Mid Term,Mathematics,92,100,Science,89,100,English,94,100,Hindi,87,100,Social Studies,91,100
+David Brown,KS005,Class 8,First Term,Mathematics,85,100,Science,88,100,English,82,100,Hindi,79,100,Social Studies,86,100
+Lisa Davis,KS006,Class 8,First Term,Mathematics,91,100,Science,94,100,English,88,100,Hindi,85,100,Social Studies,89,100
+Tom Anderson,KS007,Class 7,Annual,Mathematics,76,100,Science,79,100,English,81,100,Hindi,77,100,Social Studies,74,100
+Emma Taylor,KS008,Class 7,Annual,Mathematics,89,100,Science,92,100,English,87,100,Hindi,84,100,Social Studies,88,100
+Alex Miller,KS009,LKG,Final Term,English,45,50,Mathematics,42,50,Drawing,48,50,,,,,,,
+Sophie Clark,KS010,UKG,Final Term,English,47,50,Mathematics,44,50,Drawing,49,50,EVS,46,50,,,

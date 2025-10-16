@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KSBA School Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>🏫 KSBA School</h1>
+                    <p>Excellence in Education</p>
+                </div>
+                <nav class="nav">
+                    <button class="nav-btn active" data-page="home">🏠 Home</button>
+                    <button class="nav-btn" data-page="admission">📝 Admission</button>
+                    <button class="nav-btn" data-page="results">📊 Results</button>
+                    <button class="nav-btn" data-page="routine">📅 Routine</button>
+                    <button class="nav-btn" data-page="announcements">📢 News</button>
+                    <button class="nav-btn admin-btn" data-page="admin">🔐 Admin</button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Page -->
+            <div id="home-page" class="page active">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <div class="hero-content">
+                        <div class="hero-text">
+                            <h2>Welcome to Khatamari Shishu Bikash Academy</h2>
+                            <p>Providing quality education and nurturing young minds for a brighter future</p>
+                            <div class="hero-buttons">
+                                <button class="hero-btn primary" onclick="showPage('admission')">📝 Apply for Admission</button>
+                                <button class="hero-btn secondary" onclick="showPage('results')">📊 Check Results</button>
+                            </div>
+                        </div>
+                        <div class="hero-image">
+                            <div class="school-image-placeholder">
+                                <div class="image-icon">🏫</div>
+                                <p>KSBA School Campus</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <h3 id="total-students">0</h3>
+                            <p>Students</p>
+                        </div>
+                        <div class="stat">
+                            <h3 id="total-teachers">14</h3>
+                            <p>Teachers</p>
+                        </div>
+                        <div class="stat">
+                            <h3 id="total-classes">6</h3>
+                            <p>Classes</p>
+                        </div>
+                        <div class="stat">
+                            <h3>15+</h3>
+                            <p>Years of Excellence</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- About Section -->
+                <section class="about-section">
+                    <div class="about-content">
+                        <div class="about-text">
+                            <h3>🎓 About Khatamari Shishu Bikash Academy</h3>
+                            <p>Khatamari Shishu Bikash Academy School has been a beacon of educational excellence for over 15 years. We are committed to providing holistic education that nurtures not just academic brilliance but also character development, creativity, and critical thinking.</p>
+                            <div class="about-features">
+                                <div class="feature">
+                                    <div class="feature-icon">📚</div>
+                                    <h4>Quality Education</h4>
+                                    <p>Comprehensive curriculum designed for all-round development</p>
+                                </div>
+                                <div class="feature">
+                                    <div class="feature-icon">👨‍🏫</div>
+                                    <h4>Expert Faculty</h4>
+                                    <p>Experienced and dedicated teachers committed to student success</p>
+                                </div>
+                                <div class="feature">
+                                    <div class="feature-icon">🏆</div>
+                                    <h4>Excellence Record</h4>
+                                    <p>Consistent track record of academic achievements and awards</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="about-image">
+                            <div class="school-image-placeholder">
+                                <div class="image-icon">👥</div>
+                                <p>Our Students</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Facilities Section -->
+                <section class="facilities-section">
+                    <h3>🏢 Our Facilities</h3>
+                    <div class="facilities-grid">
+                        <div class="facility-card">
+                            <div class="facility-icon">📖</div>
+                            <h4>Library</h4>
+                            <p>Well-stocked library with thousands of books and digital resources</p>
+                        </div>
+                        <div class="facility-card">
+                            <div class="facility-icon">🔬</div>
+                            <h4>Science Labs</h4>
+                            <p>Modern laboratories for Physics, Chemistry, and Biology</p>
+                        </div>
+                        <div class="facility-card">
+                            <div class="facility-icon">💻</div>
+                            <h4>Computer Lab</h4>
+                            <p>State-of-the-art computer lab with latest technology</p>
+                        </div>
+                        <div class="facility-card">
+                            <div class="facility-icon">🏃‍♂️</div>
+                            <h4>Sports Complex</h4>
+                            <p>Indoor and outdoor sports facilities for physical development</p>
+                        </div>
+                        <div class="facility-card">
+                            <div class="facility-icon">🎭</div>
+                            <h4>Auditorium</h4>
+                            <p>Spacious auditorium for cultural events and assemblies</p>
+                        </div>
+                        <div class="facility-card">
+                            <div class="facility-icon">🚌</div>
+                            <h4>Transport</h4>
+                            <p>Safe and reliable school bus service covering wide areas</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Announcements Section -->
+                <section class="announcements-section">
+                    <h3>📢 Latest Announcements</h3>
+                    <div id="home-announcements" class="announcements-grid">
+                        <div class="announcement-card">
+                            <h4>Welcome to New Academic Year</h4>
+                            <p>Classes will commence from January 15, 2025. All students are requested to report on time.</p>
+                            <span class="date">Dec 28, 2024</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Links Section -->
+                <section class="quick-links-section">
+                    <h3>🔗 Quick Links</h3>
+                    <div class="quick-links-grid">
+                        <div class="quick-link-card" onclick="showPage('admission')">
+                            <div class="link-icon">📝</div>
+                            <h4>Online Admission</h4>
+                            <p>Apply for admission online</p>
+                        </div>
+                        <div class="quick-link-card" onclick="showPage('results')">
+                            <div class="link-icon">📊</div>
+                            <h4>Student Results</h4>
+                            <p>Check exam results</p>
+                        </div>
+                        <div class="quick-link-card" onclick="showPage('routine')">
+                            <div class="link-icon">📅</div>
+                            <h4>Class Routine</h4>
+                            <p>View daily schedules</p>
+                        </div>
+                        <div class="quick-link-card" onclick="showPage('announcements')">
+                            <div class="link-icon">📢</div>
+                            <h4>Announcements</h4>
+                            <p>Latest school news</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Contact Section -->
+                <section class="contact-section">
+                    <h3>📞 Contact Information</h3>
+                    <div class="contact-content">
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <div class="contact-icon">📍</div>
+                                <div class="contact-details">
+                                    <h4>Address</h4>
+                                    <p>near khatamari bazar, Khatamari, Khatamari, Sahebganj, Dinhata, 736168</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">📞</div>
+                                <div class="contact-details">
+                                    <h4>Phone</h4>
+                                    <p>+91 98000 47149<br>+91 81163 62155</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">✉️</div>
+                                <div class="contact-details">
+                                    <h4>Email</h4>
+                                    <p>info@ksbaschool.edu<br>admissions@ksbaschool.edu</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="school-hours">
+                            <h4>🕐 School Hours</h4>
+                            <div class="hours-info">
+                                <p><strong>Monday - Friday:</strong> 10:00 AM - 2:00 PM</p>
+                                <p><strong>Saturday:</strong> 10:00 AM - 1:00 PM</p>
+                                <p><strong>Sunday:</strong> Closed</p>
+                                <p><strong>Office Hours:</strong> 10:00 AM - 5:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Admission Page -->
+            <div id="admission-page" class="page">
+                <section class="page-header">
+                    <h2>📝 Online Admission</h2>
+                    <p>Apply for admission to KSBA School</p>
+                </section>
+
+                <div class="admission-container">
+                    <div class="admission-info">
+                        <h3>Admission Information</h3>
+                        <div class="info-cards">
+                            <div class="info-card">
+                                <h4>📅 Important Dates</h4>
+                                <ul>
+                                    <li>Application Start: January 1, 2025</li>
+                                    <li>Application End: March 31, 2025</li>
+                                    <li>Entrance Test: April 15, 2025</li>
+                                    <li>Results: April 30, 2025</li>
+                                </ul>
+                            </div>
+                            <div class="info-card">
+                                <h4>🎓 Available Classes</h4>
+                                <ul>
+                                    <li>Nursery to UKG</li>
+                                    <li>Class 1 to Class 5</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admission-form-container">
+                        <h3>Application Form</h3>
+                        <div id="admission-message"></div>
+                        
+                        <form id="admission-form" class="admission-form">
+                            <div class="form-group">
+                                <label for="student-name">Student Name *</label>
+                                <input type="text" id="student-name" name="name" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="student-age">Age *</label>
+                                    <input type="number" id="student-age" name="age" min="3" max="18" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="class-applied">Class Applied For *</label>
+                                    <select id="class-applied" name="class_applied" required>
+                                        <option value="">Select Class</option>
+                                        <option value="Nursery">Nursery</option>
+                                        <option value="LKG">LKG</option>
+                                        <option value="UKG">UKG</option>
+                                        <option value="Class 1">Class 1</option>
+                                        <option value="Class 2">Class 2</option>
+                                        <option value="Class 3">Class 3</option>
+                                        <option value="Class 4">Class 4</option>
+                                        <option value="Class 5">Class 5</option>
+                                        <option value="Class 6">Class 6</option>
+                                        <option value="Class 7">Class 7</option>
+                                        <option value="Class 8">Class 8</option>
+                                        <option value="Class 9">Class 9</option>
+                                        <option value="Class 10">Class 10</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="parent-name">Parent/Guardian Name *</label>
+                                <input type="text" id="parent-name" name="parent_name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="parent-contact">Contact Number *</label>
+                                <input type="tel" id="parent-contact" name="parent_contact" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address">Address *</label>
+                                <textarea id="address" name="address" rows="3" required></textarea>
+                            </div>
+
+                            <button type="submit" class="submit-btn">📝 Submit Application</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Page -->
+            <div id="results-page" class="page">
+                <section class="page-header">
+                    <h2>📊 Student Results</h2>
+                    <p>Check your academic performance</p>
+                </section>
+
+                <div class="results-container">
+                    <div class="search-section">
+                        <h3>🔍 Search Student Results</h3>
+                        
+                        <!-- Search Filters -->
+                        <div class="search-filters">
+                            <div class="filter-row">
+                                <div class="filter-group">
+                                    <label for="result-search">Student Name or Roll Number</label>
+                                    <input type="text" id="result-search" placeholder="Enter name or roll number">
+                                </div>
+                                <div class="filter-group">
+                                    <label for="result-class-filter">Class</label>
+                                    <select id="result-class-filter">
+                                        <option value="">All Classes</option>
+                                        <option value="LKG">LKG</option>
+                                        <option value="UKG">UKG</option>
+                                        <option value="Class 1">Class 1</option>
+                                        <option value="Class 2">Class 2</option>
+                                        <option value="Class 3">Class 3</option>
+                                        <option value="Class 4">Class 4</option>
+                                        <option value="Class 5">Class 5</option>
+                                        <option value="Class 6">Class 6</option>
+                                        <option value="Class 7">Class 7</option>
+                                        <option value="Class 8">Class 8</option>
+                                        <option value="Class 9">Class 9</option>
+                                        <option value="Class 10">Class 10</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="filter-row">
+                                <div class="filter-group">
+                                    <label for="result-section-filter">Section</label>
+                                    <select id="result-section-filter">
+                                        <option value="">All Sections</option>
+                                        <option value="A">Section A</option>
+                                        <option value="B">Section B</option>
+                                        <option value="C">Section C</option>
+                                        <option value="D">Section D</option>
+                                    </select>
+                                </div>
+                                <div class="filter-group">
+                                    <label for="result-exam-filter">Exam Type</label>
+                                    <select id="result-exam-filter">
+                                        <option value="">All Exams</option>
+                                        <option value="First Term">First Term</option>
+                                        <option value="Mid Term">Mid Term</option>
+                                        <option value="Final Term">Final Term</option>
+                                        <option value="Annual">Annual</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Search Actions -->
+                        <div class="search-actions">
+                            <button id="search-results-btn" class="btn-search">🔍 Search Results</button>
+                            <button id="clear-filters-btn" class="btn-clear">🗑️ Clear Filters</button>
+                            <button id="show-all-results-btn" class="btn-show-all">📋 Show All Matching</button>
+                        </div>
+                    </div>
+
+                    <div id="results-display" class="results-display">
+                        <div class="no-results">
+                            <p>Enter roll number or student name to view results</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Routine Page -->
+            <div id="routine-page" class="page">
+                <section class="page-header">
+                    <h2>📅 Class Routines</h2>
+                    <p>View daily and exam schedules for all classes</p>
+                </section>
+
+                <div class="routine-container">
+                    <!-- Class Filter -->
+                    <div class="routine-filter">
+                        <div class="filter-section">
+                            <label for="routine-class-filter">Select Class:</label>
+                            <select id="routine-class-filter">
+                                <option value="">All Classes</option>
+                                <option value="LKG">LKG</option>
+                                <option value="UKG">UKG</option>
+                                <option value="Class 1">Class 1</option>
+                                <option value="Class 2">Class 2</option>
+                                <option value="Class 3">Class 3</option>
+                                <option value="Class 4">Class 4</option>
+                                <option value="Class 5">Class 5</option>
+                                <option value="Class 6">Class 6</option>
+                                <option value="Class 7">Class 7</option>
+                                <option value="Class 8">Class 8</option>
+                                <option value="Class 9">Class 9</option>
+                                <option value="Class 10">Class 10</option>
+                            </select>
+                        </div>
+                        <div class="filter-section">
+                            <label for="routine-type-filter">Routine Type:</label>
+                            <select id="routine-type-filter">
+                                <option value="">All Types</option>
+                                <option value="Daily">Daily Routine</option>
+                                <option value="Exam">Exam Routine</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Routines Display -->
+                    <div id="routines-display" class="routines-display">
+                        <!-- Routines will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Announcements Page -->
+            <div id="announcements-page" class="page">
+                <section class="page-header">
+                    <h2>📢 Announcements & News</h2>
+                    <p>Stay updated with latest school news</p>
+                </section>
+
+                <div id="announcements-container" class="announcements-container">
+                    <!-- Announcements will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Admin Page -->
+            <div id="admin-page" class="page">
+                <section class="page-header">
+                    <h2>🔐 Admin Panel</h2>
+                    <p>School Management Dashboard</p>
+                </section>
+
+                <!-- Admin Login -->
+                <div id="admin-login" class="admin-login">
+                    <div class="login-form">
+                        <h3>Admin Login</h3>
+                        <div id="login-message"></div>
+                        <form id="login-form">
+                            <div class="form-group">
+                                <label for="admin-password">Password</label>
+                                <input type="password" id="admin-password" name="password" required>
+                            </div>
+                            <button type="submit">🔑 Login</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Admin Dashboard -->
+                <div id="admin-dashboard" class="admin-dashboard hidden">
+                    <div class="admin-nav">
+                        <button class="admin-nav-btn active" data-section="overview">📊 Overview</button>
+                        <button class="admin-nav-btn" data-section="admissions">📝 Admissions</button>
+                        <button class="admin-nav-btn" data-section="results">📋 Results</button>
+                        <button class="admin-nav-btn" data-section="routine">📅 Routine</button>
+                        <button class="admin-nav-btn" data-section="announcements">📢 Announcements</button>
+                        <button class="admin-nav-btn" data-section="students">👥 Students</button>
+                        <button id="admin-logout" class="logout-btn">🚪 Logout</button>
+                    </div>
+
+                    <div class="admin-content">
+                        <!-- Overview Section -->
+                        <div id="admin-overview" class="admin-section active">
+                            <h3>📊 School Overview</h3>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <h4 id="admin-total-students">0</h4>
+                                    <p>Total Students</p>
+                                </div>
+                                <div class="stat-card">
+                                    <h4 id="admin-pending-admissions">0</h4>
+                                    <p>Pending Admissions</p>
+                                </div>
+                                <div class="stat-card">
+                                    <h4 id="admin-total-announcements">0</h4>
+                                    <p>Active Announcements</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Admissions Section -->
+                        <div id="admin-admissions" class="admin-section">
+                            <h3>📝 Admission Applications</h3>
+                            <div id="admissions-list" class="admissions-list">
+                                <!-- Admissions will be loaded here -->
+                            </div>
+                        </div>
+
+                        <!-- Results Section -->
+                        <div id="admin-results" class="admin-section">
+                            <h3>📋 Student Results Management</h3>
+                            
+                            <!-- Bulk Upload Section -->
+                            <div class="bulk-upload-container">
+                                <h4>📤 Bulk Upload Results (CSV)</h4>
+                                <div id="bulk-upload-message"></div>
+                                
+                                <div class="upload-section">
+                                    <div class="upload-info">
+                                        <p><strong>CSV Format Required:</strong></p>
+                                        <p>studentName, rollNumber, class, examType, subject1Name, subject1Marks, subject1Total, subject2Name, subject2Marks, subject2Total, ...</p>
+                                        <p><strong>Example:</strong> John Doe, KS001, Class 10, Final Term, Math, 95, 100, Science, 88, 100, English, 92, 100</p>
+                                        <button type="button" id="download-template-btn" class="btn-template">📥 Download Template</button>
+                                    </div>
+                                    
+                                    <div class="file-upload-area">
+                                        <input type="file" id="csv-file-input" accept=".csv" style="display: none;">
+                                        <div class="upload-dropzone" id="upload-dropzone">
+                                            <div class="upload-icon">📁</div>
+                                            <p>Click to select CSV file or drag & drop here</p>
+                                            <p class="upload-hint">Only .csv files are accepted</p>
+                                        </div>
+                                        <button type="button" id="process-csv-btn" class="btn-process" style="display: none;">🔄 Process CSV File</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- CSV Preview -->
+                                <div id="csv-preview-container" class="csv-preview-container" style="display: none;">
+                                    <h5>📋 CSV Preview</h5>
+                                    <div id="csv-preview-table"></div>
+                                    <div class="preview-actions">
+                                        <button type="button" id="confirm-upload-btn" class="btn-confirm">✅ Confirm & Upload All Results</button>
+                                        <button type="button" id="cancel-upload-btn" class="btn-cancel">❌ Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Add New Result Form -->
+                            <div class="result-form-container">
+                                <h4>➕ Add Single Student Result</h4>
+                                <div id="result-message"></div>
+                                <form id="result-form" class="result-form">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="result-student-name">Student Name *</label>
+                                            <input type="text" id="result-student-name" name="studentName" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="result-roll-number">Roll Number *</label>
+                                            <input type="text" id="result-roll-number" name="rollNumber" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="result-class">Class *</label>
+                                            <select id="result-class" name="class" required>
+                                                <option value="">Select Class</option>
+                                                <option value="Class 1">Class 1</option>
+                                                <option value="LKG">LKG</option>
+                                                <option value="UKG">UKG</option>
+                                                <option value="Class 2">Class 2</option>
+                                                <option value="Class 3">Class 3</option>
+                                                <option value="Class 4">Class 4</option>
+                                                <option value="Class 5">Class 5</option>
+                                                <option value="Class 6">Class 6</option>
+                                                <option value="Class 7">Class 7</option>
+                                                <option value="Class 8">Class 8</option>
+                                                <option value="Class 9">Class 9</option>
+                                                <option value="Class 10">Class 10</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="result-exam-type">Exam Type *</label>
+                                            <select id="result-exam-type" name="examType" required>
+                                                <option value="">Select Exam</option>
+                                                <option value="First Term">First Term</option>
+                                                <option value="Mid Term">Mid Term</option>
+                                                <option value="Final Term">Final Term</option>
+                                                <option value="Annual">Annual</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Subject Marks -->
+                                    <div class="subjects-section">
+                                        <h5>Subject Marks</h5>
+                                        <div id="subjects-container">
+                                            <div class="subject-row">
+                                                <input type="text" placeholder="Subject Name" name="subjectName[]" required>
+                                                <input type="number" placeholder="Marks Obtained" name="marks[]" min="0" max="100" required>
+                                                <input type="number" placeholder="Total Marks" name="totalMarks[]" min="1" max="100" value="100" required>
+                                                <button type="button" class="btn-remove-subject">❌</button>
+                                            </div>
+                                        </div>
+                                        <button type="button" id="add-subject-btn" class="btn-add-subject">➕ Add Subject</button>
+                                    </div>
+
+                                    <button type="submit" class="submit-btn">📋 Add Result</button>
+                                </form>
+                            </div>
+
+                            <!-- Results List -->
+                            <div class="results-management">
+                                <h4>Existing Results</h4>
+                                <div id="admin-results-list" class="results-list">
+                                    <!-- Results will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Routine Section -->
+                        <div id="admin-routine" class="admin-section">
+                            <h3>📅 Routine Management</h3>
+                            
+                            <!-- Add New Routine Form -->
+                            <div class="routine-form-container">
+                                <h4>Add Class Routine</h4>
+                                <div id="routine-message"></div>
+                                <form id="routine-form" class="routine-form">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="routine-class">Class *</label>
+                                            <select id="routine-class" name="class" required>
+                                                <option value="">Select Class</option>
+                                                <option value="LKG">LKG</option>
+                                                <option value="UKG">UKG</option>
+                                                <option value="Class 1">Class 1</option>
+                                                <option value="Class 2">Class 2</option>
+                                                <option value="Class 3">Class 3</option>
+                                                <option value="Class 4">Class 4</option>
+                                                <option value="Class 5">Class 5</option>
+                                                <option value="Class 6">Class 6</option>
+                                                <option value="Class 7">Class 7</option>
+                                                <option value="Class 8">Class 8</option>
+                                                <option value="Class 9">Class 9</option>
+                                                <option value="Class 10">Class 10</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="routine-type">Routine Type *</label>
+                                            <select id="routine-type" name="routineType" required>
+                                                <option value="">Select Type</option>
+                                                <option value="Daily">Daily Routine</option>
+                                                <option value="Exam">Exam Routine</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="routine-title">Title *</label>
+                                        <input type="text" id="routine-title" name="title" placeholder="e.g., Class 10 Daily Routine" required>
+                                    </div>
+
+                                    <!-- Time Slots -->
+                                    <div class="time-slots-section">
+                                        <h5>Time Slots</h5>
+                                        <div id="time-slots-container">
+                                            <div class="time-slot-row">
+                                                <input type="time" name="startTime[]" required>
+                                                <input type="time" name="endTime[]" required>
+                                                <input type="text" placeholder="Subject/Activity" name="subject[]" required>
+                                                <input type="text" placeholder="Teacher" name="teacher[]">
+                                                <button type="button" class="btn-remove-slot">❌</button>
+                                            </div>
+                                        </div>
+                                        <button type="button" id="add-slot-btn" class="btn-add-slot">➕ Add Time Slot</button>
+                                    </div>
+
+                                    <button type="submit" class="submit-btn">📅 Add Routine</button>
+                                </form>
+                            </div>
+
+                            <!-- Routines List -->
+                            <div class="routines-management">
+                                <h4>Existing Routines</h4>
+                                <div id="admin-routines-list" class="routines-list">
+                                    <!-- Routines will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Announcements Section -->
+                        <div id="admin-announcements" class="admin-section">
+                            <h3>📢 Manage Announcements</h3>
+                            <div class="announcement-form">
+                                <h4>Add New Announcement</h4>
+                                <div id="announcement-message"></div>
+                                <form id="announcement-form">
+                                    <div class="form-group">
+                                        <label for="announcement-title">Title *</label>
+                                        <input type="text" id="announcement-title" name="title" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="announcement-content">Content *</label>
+                                        <textarea id="announcement-content" name="content" rows="4" required></textarea>
+                                    </div>
+                                    <button type="submit">📢 Add Announcement</button>
+                                </form>
+                            </div>
+                            <div id="admin-announcements-list" class="announcements-list">
+                                <!-- Admin announcements will be loaded here -->
+                            </div>
+                        </div>
+
+                        <!-- Students Section -->
+                        <div id="admin-students" class="admin-section">
+                            <h3>👥 Student Management</h3>
+                            <div id="students-list" class="students-list">
+                                <!-- Students will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Enhanced Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-main">
+                    <div class="footer-section">
+                        <div class="footer-logo">
+                            <h3>🏫 KSBA School</h3>
+                            <p>Excellence in Education</p>
+                        </div>
+                        <p class="footer-description">
+                            Nurturing young minds for over 15 years with quality education, 
+                            character development, and holistic growth.
+                        </p>
+                        <div class="social-links">
+                            <a href="#" class="social-link">📘 Facebook</a>
+                            <a href="#" class="social-link">📸 Instagram</a>
+                            <a href="#" class="social-link">🐦 Twitter</a>
+                            <a href="#" class="social-link">📺 YouTube</a>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>Quick Links</h4>
+                        <ul class="footer-links">
+                            <li><a href="#" onclick="showPage('admission')">📝 Admissions</a></li>
+                            <li><a href="#" onclick="showPage('results')">📊 Results</a></li>
+                            <li><a href="#" onclick="showPage('routine')">📅 Routine</a></li>
+                            <li><a href="#" onclick="showPage('announcements')">📢 News</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>Academic</h4>
+                        <ul class="footer-links">
+                            <li><a href="#">📚 Curriculum</a></li>
+                            <li><a href="#">🏆 Achievements</a></li>
+                            <li><a href="#">👨‍🏫 Faculty</a></li>
+                            <li><a href="#">📖 Library</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4>Contact Info</h4>
+                        <div class="footer-contact">
+                            <p>📍 near khatamari bazar, Khatamari, Khatamari, Sahebganj, Dinhata, 736168</p>
+                            <p>📞 +91 98000 47149</p>
+                            <p>✉️ info@ksbaschool.edu</p>
+                            <p>🕐 Mon-Fri: 10AM - 2PM</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom">
+                    <div class="footer-bottom-content">
+                        <p>&copy; 2024 KSBA School. All rights reserved.</p>
+                        <div class="footer-bottom-links">
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Terms of Service</a>
+                            <a href="#">Sitemap</a>
+                        </div>
+                    </div>
+                    <div class="footer-tagline">
+                        <p>🌟 Excellence in Education | Nurturing Future Leaders 🌟</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
