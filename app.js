@@ -496,8 +496,8 @@ function loadHomeData() {
 function updateStatistics() {
     // Update home page stats
     document.getElementById('total-students').textContent = appState.data.students.length;
-    document.getElementById('total-teachers').textContent = '25'; // Static for now
-    document.getElementById('total-classes').textContent = '12'; // Static for now
+    document.getElementById('total-teachers').textContent = '13'; // Static for now
+    document.getElementById('total-classes').textContent = '5'; // Static for now
 
     // Update admin stats
     if (document.getElementById('admin-total-students')) {
