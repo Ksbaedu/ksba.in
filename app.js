@@ -5,7 +5,7 @@
 
 // Application Configuration
 const CONFIG = {
-    ADMIN_PASSWORD: 'admin123',
+    ADMIN_PASSWORD: 'alamgir@1234',
     STORAGE_KEY: 'ksba_school_data',
     GOOGLE_SHEETS_URL: '', // Will be set when connected to Google Sheets
     VERSION: '1.0.0'
