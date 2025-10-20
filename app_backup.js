@@ -475,7 +475,7 @@ function handleAdminLogin(e) {
     
     const password = document.getElementById('admin-password').value;
     
-    if (password === 'admin123') {
+    if (password === 'alamgir@1234') {
         appState.isAuthenticated = true;
         showAdminDashboard();
         showMessage('login-message', '✅ Login successful!', 'success');
