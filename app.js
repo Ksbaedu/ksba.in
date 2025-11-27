@@ -1,176 +1,6 @@
-/**
- * KSBA School Management System - Complete JavaScript Application
- * A fully functional web app with local storage and Google Sheets integration
- */
-
-// Application Configuration
-const CONFIG = {
-    ADMIN_PASSWORD: 'alamgir@1234',
-    STORAGE_KEY: 'ksba_school_data',
-    GOOGLE_SHEETS_URL: '', // Will be set when connected to Google Sheets
-    VERSION: '1.0.0'
-};
-
-// Application State
-let appState = {
-    currentPage: 'home',
-    isAdminLoggedIn: false,
-    currentAdminSection: 'overview',
-    data: {
-        students: [],
-        admissions: [],
-        announcements: [],
-        results: [],
-        routines: []
-    }
-};
-
-// Initialize Application
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🏫 KSBA School Management System v' + CONFIG.VERSION);
-    
-    // Load data from localStorage
-    loadAppData();
-    
-    // Initialize event listeners
-    initializeEventListeners();
-    
-    // Load initial data
-    loadInitialData();
-    
-    // Add debug info
-    console.log('📊 Current app state:', appState);
-    console.log('👥 Students loaded:', appState.data.students.length);
-    console.log('📝 Admissions loaded:', appState.data.admissions.length);
-    
-    // Show home page
-    showPage('home');
-    
-    console.log('✅ Application initialized successfully');
-});
-
-// Data Management Functions
-function loadAppData() {
-    try {
-        const savedData = localStorage.getItem(CONFIG.STORAGE_KEY);
-        if (savedData) {
-            const parsedData = JSON.parse(savedData);
-            appState.data = { ...appState.data, ...parsedData };
-            console.log('📁 Data loaded from localStorage');
-        }
-    } catch (error) {
-        console.error('❌ Error loading data:', error);
-    }
-}
-
-function saveAppData() {
-    try {
-        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(appState.data));
-        console.log('💾 Data saved to localStorage');
-    } catch (error) {
-        console.error('❌ Error saving data:', error);
-    }
-}
-
-function loadInitialData() {
-    if (appState.data.announcements.length === 0) {
-        appState.data.announcements = [
-            {
-                id: 1,
-                title: 'Welcome to New Academic Year 2025',
-                content: 'Classes will commence from January 15, 2025. All students are requested to report on time with proper uniform and books.',
-                date: '2024-12-28',
-                status: 'active'
-            },
-            {
-                id: 2,
-                title: 'Annual Sports Day',
-                content: 'Our annual sports day will be held on February 14, 2025. Participation is mandatory for all students.',
-                date: '2024-12-25',
-                status: 'active'
-            }
-        ];
-    }
-
-    // Add sample students if none exist (for testing)
-    if (appState.data.students.length === 0) {
-        appState.data.students = [
-            {
-                id: 1001,
-                name: 'Aarav Sharma',
-                rollNumber: 'KS25001',
-                class: 'Class 5',
-                section: 'A',
-                age: 11,
-                parent_name: 'Rajesh Sharma',
-                parent_contact: '+91-9876543210',
-                parent_email: 'rajesh.sharma@email.com',
-                address: '123 Main Street, Delhi',
-                admissionDate: '2024-01-15',
-                status: 'active',
-                originalAdmissionId: 1
-            },
-            {
-                id: 1002,
-                name: 'Priya Patel',
-                rollNumber: 'KS25002',
-                class: 'Class 6',
-                section: 'B',
-                age: 12,
-                parent_name: 'Suresh Patel',
-                parent_contact: '+91-9876543211',
-                parent_email: 'suresh.patel@email.com',
-                address: '456 Park Avenue, Mumbai',
-                admissionDate: '2024-01-16',
-                status: 'active',
-                originalAdmissionId: 2
-            }
-        ];
-        
-        console.log('📚 Sample students added for testing');
-        saveAppData();
-    }
-
-    // Add sample admissions if none exist (for testing)
-    if (appState.data.admissions.length === 0) {
-        appState.data.admissions = [
-            {
-                id: 2001,
-                name: 'Rohit Kumar',
-                age: 10,
-                class: 'Class 4',
-                class_applied: 'Class 4',
-                parent_name: 'Sunil Kumar',
-                parent_contact: '+91-9876543212',
-                parent_email: 'sunil.kumar@email.com',
-                address: '789 School Road, Bangalore',
-                applicationDate: '2024-12-20',
-                status: 'pending'
-            },
-            {
-                id: 2002,
-                name: 'Anita Singh',
-                age: 13,
-                class: 'Class 7',
-                class_applied: 'Class 7',
-                parent_name: 'Ramesh Singh',
-                parent_contact: '+91-9876543213',
-                parent_email: 'ramesh.singh@email.com',
-                address: '321 Garden Street, Chennai',
-                applicationDate: '2024-12-22',
-                status: 'approved'
-            },
-            {
-                id: 2003,
-                name: 'Vikash Patel',
-                age: 8,
-                class: 'Class 2',
-                class_applied: 'Class 2',
-                parent_name: 'Mahesh Patel',
-                parent_contact: '+91-9876543214',
-                parent_email: 'mahesh.patel@email.com',
+patel@email.com',
                 address: '654 Market Lane, Pune',
-                applicationDate: '2024-12-25',
+                application_date: '2024-12-25',
                 status: 'rejected'
             }
         ];
@@ -183,72 +13,72 @@ function loadInitialData() {
         appState.data.results = [
             {
                 id: 1,
-                studentName: 'Aarav Sharma',
-                rollNumber: 'KS001',
+                student_name: 'Aarav Sharma',
+                roll_number: 'KS001',
                 class: 'Class 10',
                 section: 'A',
-                examType: 'Final Term',
+                exam_type: 'Final Term',
                 subjects: [
-                    { name: 'Mathematics', marks: 95, totalMarks: 100 },
-                    { name: 'Science', marks: 88, totalMarks: 100 },
-                    { name: 'English', marks: 92, totalMarks: 100 },
-                    { name: 'Social Studies', marks: 85, totalMarks: 100 }
+                    { name: 'Mathematics', marks: 95, total_marks: 100 },
+                    { name: 'Science', marks: 88, total_marks: 100 },
+                    { name: 'English', marks: 92, total_marks: 100 },
+                    { name: 'Social Studies', marks: 85, total_marks: 100 }
                 ],
-                totalMarks: 360,
-                maxMarks: 400,
+                total_marks: 360,
+                max_marks: 400,
                 percentage: 90,
                 grade: 'A+'
             },
             {
                 id: 2,
-                studentName: 'Priya Patel',
-                rollNumber: 'KS002',
+                student_name: 'Priya Patel',
+                roll_number: 'KS002',
                 class: 'Class 10',
                 section: 'B',
-                examType: 'Final Term',
+                exam_type: 'Final Term',
                 subjects: [
-                    { name: 'Mathematics', marks: 87, totalMarks: 100 },
-                    { name: 'Science', marks: 91, totalMarks: 100 },
-                    { name: 'English', marks: 89, totalMarks: 100 },
-                    { name: 'Social Studies', marks: 82, totalMarks: 100 }
+                    { name: 'Mathematics', marks: 87, total_marks: 100 },
+                    { name: 'Science', marks: 91, total_marks: 100 },
+                    { name: 'English', marks: 89, total_marks: 100 },
+                    { name: 'Social Studies', marks: 82, total_marks: 100 }
                 ],
-                totalMarks: 349,
-                maxMarks: 400,
+                total_marks: 349,
+                max_marks: 400,
                 percentage: 87,
                 grade: 'A'
             },
             {
                 id: 3,
-                studentName: 'Rahul Kumar',
-                rollNumber: 'KS003',
+                student_name: 'Rahul Kumar',
+                roll_number: 'KS003',
                 class: 'Class 9',
                 section: 'A',
-                examType: 'Mid Term',
+                exam_type: 'Mid Term',
                 subjects: [
-                    { name: 'Mathematics', marks: 78, totalMarks: 100 },
-                    { name: 'Science', marks: 82, totalMarks: 100 },
-                    { name: 'English', marks: 85, totalMarks: 100 },
-                    { name: 'Hindi', marks: 80, totalMarks: 100 }
+                    { name: 'Mathematics', marks: 78, total_marks: 100 },
+                    { name: 'Science', marks: 82, total_marks: 100 },
+                    { name: 'English', marks: 85, total_marks: 100 },
+                    { name: 'Hindi', marks: 80, total_marks: 100 }
                 ],
-                totalMarks: 325,
-                maxMarks: 400,
+                total_marks: 325,
+                max_marks: 400,
                 percentage: 81,
                 grade: 'A'
             },
             {
                 id: 4,
-                studentName: 'Sneha Singh',
-                rollNumber: 'KS004',
+                student_name: 'Sneha Singh',
+                roll_number: 'KS004',
                 class: 'Class 8',
                 section: 'C',
-                examType: 'First Term',
+                exam_type: 'First Term',
                 subjects: [
-                    { name: 'Mathematics', marks: 92, totalMarks: 100 },
-                    { name: 'Science', marks: 89, totalMarks: 100 },
-                    { name: 'English', marks: 94, totalMarks: 100 }
+                    { name: 'Mathematics', marks: 92, total_marks: 100 },
+                    { name: 'Science', marks: 89, total_marks: 100 },
+                    { name: 'English', marks: 94, total_marks: 100 }
                 ],
-                totalMarks: 275,
-                maxMarks: 300,
+                total_marks: 275,
+                max_marks: 300,
                 percentage: 92,
                 grade: 'A+'
             }
@@ -260,9 +90,9 @@ function loadInitialData() {
             {
                 id: 1,
                 class: 'Class 10',
-                routineType: 'Daily',
+                routine_type: 'Daily',
                 title: 'Class 10 Daily Routine',
-                timeSlots: [
+                time_slots: [
                     { startTime: '08:00', endTime: '08:45', subject: 'Mathematics', teacher: 'Mr. Sharma' },
                     { startTime: '08:45', endTime: '09:30', subject: 'English', teacher: 'Ms. Patel' },
                     { startTime: '09:30', endTime: '09:45', subject: 'Break', teacher: '' },
@@ -273,9 +103,9 @@ function loadInitialData() {
             {
                 id: 2,
                 class: 'Class 9',
-                routineType: 'Daily',
+                routine_type: 'Daily',
                 title: 'Class 9 Daily Routine',
-                timeSlots: [
+                time_slots: [
                     { startTime: '08:00', endTime: '08:45', subject: 'English', teacher: 'Ms. Patel' },
                     { startTime: '08:45', endTime: '09:30', subject: 'Mathematics', teacher: 'Mr. Sharma' },
                     { startTime: '09:30', endTime: '09:45', subject: 'Break', teacher: '' },
@@ -496,8 +326,8 @@ function loadHomeData() {
 function updateStatistics() {
     // Update home page stats
     document.getElementById('total-students').textContent = appState.data.students.length;
-    document.getElementById('total-teachers').textContent = '13'; // Static for now
-    document.getElementById('total-classes').textContent = '5'; // Static for now
+    document.getElementById('total-teachers').textContent = '25'; // Static for now
+    document.getElementById('total-classes').textContent = '12'; // Static for now
 
     // Update admin stats
     if (document.getElementById('admin-total-students')) {
@@ -531,7 +361,7 @@ function handleAdmissionSubmit(e) {
     
     const formData = new FormData(e.target);
     const admissionData = {
-        id: Date.now(),
+        id: generateId(),
         name: formData.get('name'),
         age: parseInt(formData.get('age')),
         class_applied: formData.get('class_applied'),
@@ -539,16 +369,44 @@ function handleAdmissionSubmit(e) {
         parent_contact: formData.get('parent_contact'),
         address: formData.get('address'),
         status: 'pending',
-        applicationDate: new Date().toISOString().split('T')[0]
+        application_date: new Date().toISOString().split('T')[0]
     };
 
-    // Validate data
+    // Validate data with detailed logging
+    console.log('🔍 Admission form data:', admissionData);
+    console.log('🔍 Validation checks:', {
+        name: !!admissionData.name,
+        age: !!admissionData.age,
+        class_applied: !!admissionData.class_applied,
+        parent_contact: !!admissionData.parent_contact
+    });
+    
     if (!admissionData.name || !admissionData.age || !admissionData.class_applied || !admissionData.parent_contact) {
-        showMessage('admission-message', 'Please fill all required fields', 'error');
+        const missingFields = [];
+        if (!admissionData.name) missingFields.push('name');
+        if (!admissionData.age) missingFields.push('age');
+        if (!admissionData.class_applied) missingFields.push('class applied');
+        if (!admissionData.parent_contact) missingFields.push('parent_contact');
+        
+        console.error('❌ Missing required fields:', missingFields);
+        showMessage('admission-message', `Please fill all required fields. Missing: ${missingFields.join(', ')}`, 'error');
         return;
     }
 
-    // Save admission
+    // Save admission with duplicate prevention
+    // Check if admission with same details already exists
+    const existingAdmission = appState.data.admissions.find(admission => 
+        admission.name === admissionData.name && 
+        admission.class_applied === admissionData.class_applied &&
+        admission.parent_contact === admissionData.parent_contact &&
+        admission.status === 'pending'
+    );
+    
+    if (existingAdmission) {
+        showMessage('admission-message', '⚠️ An application with these details already exists. Please contact the school office.', 'warning');
+        return;
+    }
+    
     appState.data.admissions.push(admissionData);
     saveAppData();
 
@@ -580,8 +438,8 @@ function handleResultsSearch() {
     let filteredResults = appState.data.results.filter(result => {
         // Text search (name or roll number)
         const matchesSearch = !searchTerm || 
-            result.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            result.studentName.toLowerCase().includes(searchTerm.toLowerCase());
+            result.roll_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            result.student_name.toLowerCase().includes(searchTerm.toLowerCase());
         
         // Class filter
         const matchesClass = !classFilter || result.class === classFilter;
@@ -590,7 +448,7 @@ function handleResultsSearch() {
         const matchesSection = !sectionFilter || result.section === sectionFilter;
         
         // Exam type filter
-        const matchesExam = !examFilter || result.examType === examFilter;
+        const matchesExam = !examFilter || result.exam_type === examFilter;
         
         return matchesSearch && matchesClass && matchesSection && matchesExam;
     });
@@ -619,13 +477,13 @@ function displaySingleResult(result) {
     resultsDisplay.innerHTML = `
         <div class="result-card">
             <div class="result-header">
-                <h3>${result.studentName}</h3>
-                <p>Roll: ${result.rollNumber} | Class: ${result.class} ${result.section ? '- Section ' + result.section : ''} | Exam: ${result.examType}</p>
+                <h3>${result.student_name}</h3>
+                <p>Roll: ${result.roll_number} | Class: ${result.class} ${result.section ? '- Section ' + result.section : ''} | Exam: ${result.exam_type}</p>
             </div>
             <div class="result-summary">
                 <div class="summary-item">
                     <span>Total Marks:</span>
-                    <span>${result.totalMarks}/${result.maxMarks}</span>
+                    <span>${result.total_marks}/${result.max_marks}</span>
                 </div>
                 <div class="summary-item">
                     <span>Percentage:</span>
@@ -652,8 +510,8 @@ function displaySingleResult(result) {
                             <tr>
                                 <td>${subject.name}</td>
                                 <td>${subject.marks}</td>
-                                <td>${subject.totalMarks}</td>
-                                <td>${Math.round((subject.marks / subject.totalMarks) * 100)}%</td>
+                                <td>${subject.total_marks}</td>
+                                <td>${Math.round((subject.marks / subject.total_marks) * 100)}%</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -693,12 +551,12 @@ function displayMultipleResults(results, showSearchInfo = false) {
                 ${results.map((result, index) => `
                     <div class="result-summary-card" onclick="showDetailedResult(${result.id})">
                         <div class="card-header">
-                            <h5>${result.studentName}</h5>
-                            <span class="roll-number">${result.rollNumber}</span>
+                            <h5>${result.student_name}</h5>
+                            <span class="roll-number">${result.roll_number}</span>
                         </div>
                         <div class="card-details">
                             <p><strong>Class:</strong> ${result.class} ${result.section ? '- Section ' + result.section : ''}</p>
-                            <p><strong>Exam:</strong> ${result.examType}</p>
+                            <p><strong>Exam:</strong> ${result.exam_type}</p>
                             <p><strong>Grade:</strong> <span class="grade-badge grade-${result.grade.replace('+', 'plus')}">${result.grade}</span></p>
                             <p><strong>Percentage:</strong> ${result.percentage}%</p>
                         </div>
@@ -752,8 +610,8 @@ function showAllResults() {
     let filteredResults = appState.data.results.filter(result => {
         // Text search (name or roll number)
         const matchesSearch = !searchTerm || 
-            result.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            result.studentName.toLowerCase().includes(searchTerm.toLowerCase());
+            result.roll_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            result.student_name.toLowerCase().includes(searchTerm.toLowerCase());
         
         // Class filter
         const matchesClass = !classFilter || result.class === classFilter;
@@ -762,7 +620,7 @@ function showAllResults() {
         const matchesSection = !sectionFilter || result.section === sectionFilter;
         
         // Exam type filter
-        const matchesExam = !examFilter || result.examType === examFilter;
+        const matchesExam = !examFilter || result.exam_type === examFilter;
         
         return matchesSearch && matchesClass && matchesSection && matchesExam;
     });
@@ -929,12 +787,12 @@ function loadAdminAdmissions() {
                     <div class="admission-info">
                         <h5>${admission.name}</h5>
                         <p><strong>Age:</strong> ${admission.age} years</p>
-                        <p><strong>Class Applied:</strong> ${admission.class || admission.class_applied}</p>
+                        <p><strong>Class Applied:</strong> ${admission.class_applied}</p>
                         <p><strong>Parent:</strong> ${admission.parent_name}</p>
                         <p><strong>Contact:</strong> ${admission.parent_contact}</p>
                         <p><strong>Email:</strong> ${admission.parent_email}</p>
                         <p><strong>Address:</strong> ${admission.address}</p>
-                        <p><strong>Applied:</strong> ${formatDate(admission.applicationDate)}</p>
+                        <p><strong>Applied:</strong> ${formatDate(admission.application_date)}</p>
                         <p><strong>Status:</strong> <span class="status-badge status-${admission.status}">${admission.status}</span></p>
                     </div>
                     <div class="admission-actions">
@@ -960,23 +818,23 @@ function updateAdmissionStatus(admissionId, newStatus) {
         // If approved, add to students array
         if (newStatus === 'approved') {
             const student = {
-                id: Date.now(),
+                id: generateId(),
                 name: admission.name,
-                rollNumber: generateRollNumber(),
-                class: admission.class,
+                roll_number: generateRollNumber(),
+                class: admission.class_applied,
                 section: 'A', // Default section
                 age: admission.age,
                 parent_name: admission.parent_name,
                 parent_contact: admission.parent_contact,
                 parent_email: admission.parent_email,
                 address: admission.address,
-                admissionDate: new Date().toISOString().split('T')[0],
+                admission_date: new Date().toISOString().split('T')[0],
                 status: 'active',
-                originalAdmissionId: admissionId
+                original_admission_id: admissionId
             };
             
             appState.data.students.push(student);
-            console.log(`✅ Student added: ${student.name} (Roll: ${student.rollNumber})`);
+            console.log(`✅ Student added: ${student.name} (Roll: ${student.roll_number})`);
         }
         
         saveAppData();
@@ -1025,16 +883,16 @@ function editAdmission(admissionId) {
                     <div class="form-group">
                         <label>Class Applied</label>
                         <select name="class" required>
-                            <option value="Class 1" ${(admission.class || admission.class_applied) === 'Class 1' ? 'selected' : ''}>Class 1</option>
-                            <option value="Class 2" ${(admission.class || admission.class_applied) === 'Class 2' ? 'selected' : ''}>Class 2</option>
-                            <option value="Class 3" ${(admission.class || admission.class_applied) === 'Class 3' ? 'selected' : ''}>Class 3</option>
-                            <option value="Class 4" ${(admission.class || admission.class_applied) === 'Class 4' ? 'selected' : ''}>Class 4</option>
-                            <option value="Class 5" ${(admission.class || admission.class_applied) === 'Class 5' ? 'selected' : ''}>Class 5</option>
-                            <option value="Class 6" ${(admission.class || admission.class_applied) === 'Class 6' ? 'selected' : ''}>Class 6</option>
-                            <option value="Class 7" ${(admission.class || admission.class_applied) === 'Class 7' ? 'selected' : ''}>Class 7</option>
-                            <option value="Class 8" ${(admission.class || admission.class_applied) === 'Class 8' ? 'selected' : ''}>Class 8</option>
-                            <option value="Class 9" ${(admission.class || admission.class_applied) === 'Class 9' ? 'selected' : ''}>Class 9</option>
-                            <option value="Class 10" ${(admission.class || admission.class_applied) === 'Class 10' ? 'selected' : ''}>Class 10</option>
+                            <option value="Class 1" ${admission.class_applied === 'Class 1' ? 'selected' : ''}>Class 1</option>
+                            <option value="Class 2" ${admission.class_applied} === 'Class 2' ? 'selected' : ''}>Class 2</option>
+                            <option value="Class 3" ${admission.class_applied} === 'Class 3' ? 'selected' : ''}>Class 3</option>
+                            <option value="Class 4" ${admission.class_applied} === 'Class 4' ? 'selected' : ''}>Class 4</option>
+                            <option value="Class 5" ${admission.class_applied} === 'Class 5' ? 'selected' : ''}>Class 5</option>
+                            <option value="Class 6" ${admission.class_applied} === 'Class 6' ? 'selected' : ''}>Class 6</option>
+                            <option value="Class 7" ${admission.class_applied} === 'Class 7' ? 'selected' : ''}>Class 7</option>
+                            <option value="Class 8" ${admission.class_applied} === 'Class 8' ? 'selected' : ''}>Class 8</option>
+                            <option value="Class 9" ${admission.class_applied} === 'Class 9' ? 'selected' : ''}>Class 9</option>
+                            <option value="Class 10" ${admission.class_applied} === 'Class 10' ? 'selected' : ''}>Class 10</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -1082,8 +940,7 @@ function editAdmission(admissionId) {
         // Update admission data
         admission.name = formData.get('name');
         admission.age = formData.get('age');
-        admission.class = formData.get('class');
-        admission.class_applied = formData.get('class'); // For backward compatibility
+        admission.class_applied = formData.get('class');
         admission.status = formData.get('status');
         admission.parent_name = formData.get('parent_name');
         admission.parent_contact = formData.get('parent_contact');
@@ -1118,10 +975,10 @@ function downloadAdmission(admissionId) {
 
     const csvContent = [
         'Name,Age,Class Applied,Parent Name,Parent Contact,Parent Email,Address,Application Date,Status',
-        `"${admission.name}","${admission.age}","${admission.class || admission.class_applied}","${admission.parent_name}","${admission.parent_contact}","${admission.parent_email}","${admission.address}","${admission.applicationDate}","${admission.status}"`
+        `"${admission.name}","${admission.age}","${admission.class_applied}","${admission.parent_name}","${admission.parent_contact}","${admission.parent_email}","${admission.address}","${admission.application_date}","${admission.status}"`
     ].join('\n');
 
-    downloadCSV(csvContent, `admission_${admission.name.replace(/\s+/g, '_')}_${admission.applicationDate}.csv`);
+    downloadCSV(csvContent, `admission_${admission.name.replace(/\s+/g, '_')}_${admission.application_date}.csv`);
 }
 
 function loadAdminStudents() {
@@ -1160,14 +1017,14 @@ function loadAdminStudents() {
                 <div class="student-card">
                     <div class="student-info">
                         <h5>${student.name}</h5>
-                        <p><strong>Roll:</strong> ${student.rollNumber}</p>
+                        <p><strong>Roll:</strong> ${student.roll_number}</p>
                         <p><strong>Class:</strong> ${student.class} ${student.section ? '- Section ' + student.section : ''}</p>
                         <p><strong>Age:</strong> ${student.age} years</p>
                         <p><strong>Parent:</strong> ${student.parent_name}</p>
                         <p><strong>Contact:</strong> ${student.parent_contact}</p>
                         <p><strong>Email:</strong> ${student.parent_email}</p>
                         <p><strong>Address:</strong> ${student.address}</p>
-                        <p><strong>Admission Date:</strong> ${formatDate(student.admissionDate)}</p>
+                        <p><strong>Admission Date:</strong> ${formatDate(student.admission_date)}</p>
                         <p><strong>Status:</strong> <span class="status-badge status-${student.status}">${student.status}</span></p>
                     </div>
                     <div class="student-actions">
@@ -1201,7 +1058,7 @@ function editStudent(studentId) {
                     </div>
                     <div class="form-group">
                         <label>Roll Number</label>
-                        <input type="text" name="rollNumber" value="${student.rollNumber}" required>
+                        <input type="text" name="rollNumber" value="${student.roll_number}" required>
                     </div>
                 </div>
                 <div class="form-row">
@@ -1278,7 +1135,7 @@ function editStudent(studentId) {
         
         // Update student data
         student.name = formData.get('name');
-        student.rollNumber = formData.get('rollNumber');
+        student.roll_number = formData.get('rollNumber');
         student.class = formData.get('class');
         student.section = formData.get('section');
         student.age = formData.get('age');
@@ -1316,10 +1173,10 @@ function downloadStudent(studentId) {
 
     const csvContent = [
         'Name,Roll Number,Class,Section,Age,Parent Name,Parent Contact,Parent Email,Address,Admission Date,Status',
-        `"${student.name}","${student.rollNumber}","${student.class}","${student.section}","${student.age}","${student.parent_name}","${student.parent_contact}","${student.parent_email}","${student.address}","${student.admissionDate}","${student.status}"`
+        `"${student.name}","${student.roll_number}","${student.class}","${student.section}","${student.age}","${student.parent_name}","${student.parent_contact}","${student.parent_email}","${student.address}","${student.admission_date}","${student.status}"`
     ].join('\n');
 
-    downloadCSV(csvContent, `student_${student.rollNumber}_${student.name.replace(/\s+/g, '_')}.csv`);
+    downloadCSV(csvContent, `student_${student.roll_number}_${student.name.replace(/\s+/g, '_')}.csv`);
 }
 
 function downloadAllStudents() {
@@ -1331,7 +1188,7 @@ function downloadAllStudents() {
     const csvContent = [
         'Name,Roll Number,Class,Section,Age,Parent Name,Parent Contact,Parent Email,Address,Admission Date,Status',
         ...appState.data.students.map(student => 
-            `"${student.name}","${student.rollNumber}","${student.class}","${student.section}","${student.age}","${student.parent_name}","${student.parent_contact}","${student.parent_email}","${student.address}","${student.admissionDate}","${student.status}"`
+            `"${student.name}","${student.roll_number}","${student.class}","${student.section}","${student.age}","${student.parent_name}","${student.parent_contact}","${student.parent_email}","${student.address}","${student.admission_date}","${student.status}"`
         )
     ].join('\n');
 
@@ -1366,7 +1223,7 @@ function handleAnnouncementSubmit(e) {
     
     const formData = new FormData(e.target);
     const announcementData = {
-        id: Date.now(),
+        id: generateId(),
         title: formData.get('title'),
         content: formData.get('content'),
         date: new Date().toISOString().split('T')[0],
@@ -1426,16 +1283,33 @@ function deleteAnnouncement(announcementId) {
 }
 
 
-// Utility Functions
+// Generate a smaller ID for database compatibility
+function generateId() {
+    // Use a counter-based ID instead of timestamp to avoid INTEGER overflow
+    if (!window.idCounter) window.idCounter = 10000;
+    return window.idCounter++;
+}
 function showMessage(containerId, message, type = 'info') {
     const container = document.getElementById(containerId);
     if (container) {
-        container.innerHTML = `<div class="message ${type}">${message}</div>`;
-        
-        // Auto-hide after 5 seconds
-        setTimeout(() => {
-            container.innerHTML = '';
-        }, 5000);
+        // Special handling for cloud status
+        if (containerId === 'cloud-status') {
+            container.textContent = message;
+            container.className = `cloud-status ${type}`;
+            container.style.display = 'block';
+            
+            // Auto-hide cloud status after 3 seconds
+            setTimeout(() => {
+                container.style.display = 'none';
+            }, 3000);
+        } else {
+            container.innerHTML = `<div class="message ${type}">${message}</div>`;
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
     }
 }
 
@@ -1481,7 +1355,7 @@ function loadRoutineData() {
     }
     
     if (typeFilter && typeFilter.value) {
-        filteredRoutines = filteredRoutines.filter(r => r.routineType === typeFilter.value);
+        filteredRoutines = filteredRoutines.filter(r => r.routine_type === typeFilter.value);
     }
     
     if (filteredRoutines.length === 0) {
@@ -1493,10 +1367,23 @@ function loadRoutineData() {
         <div class="routine-card">
             <h4>${routine.title}</h4>
             <div class="routine-meta">
-                ${routine.class} • ${routine.routineType} Routine
+                ${routine.class} • ${routine.routine_type} Routine
             </div>
+            ${routine.description ? `<p class="routine-description">${routine.description}</p>` : ''}
+            ${routine.pdf_attachment ? `
+                <div class="pdf-download-section">
+                    <div class="pdf-info">
+                        <span class="pdf-icon">📄</span>
+                        <span class="pdf-name">${routine.pdf_attachment.name}</span>
+                        <span class="pdf-size">(${(routine.pdf_attachment.size / 1024 / 1024).toFixed(2)} MB)</span>
+                    </div>
+                    <button class="btn-download-pdf" onclick="downloadRoutinePDF(${routine.id})">
+                        📥 Download PDF
+                    </button>
+                </div>
+            ` : ''}
             <div class="routine-schedule">
-                ${routine.timeSlots.map(slot => `
+                ${routine.time_slots.map(slot => `
                     <div class="schedule-item">
                         <div class="schedule-time">${slot.startTime} - ${slot.endTime}</div>
                         <div class="schedule-subject">${slot.subject}</div>
@@ -1504,6 +1391,7 @@ function loadRoutineData() {
                     </div>
                 `).join('')}
             </div>
+            ${routine.created_at ? `<div class="routine-date"><small>Posted: ${formatDate(routine.created_at)}</small></div>` : ''}
         </div>
     `).join('');
 }
@@ -1541,7 +1429,7 @@ function handleResultSubmit(e) {
     
     // Calculate totals
     const totalObtained = subjects.reduce((sum, subject) => sum + subject.marks, 0);
-    const maxTotal = subjects.reduce((sum, subject) => sum + subject.totalMarks, 0);
+    const maxTotal = subjects.reduce((sum, subject) => sum + subject.total_marks, 0);
     const percentage = Math.round((totalObtained / maxTotal) * 100);
     
     // Calculate grade
@@ -1553,7 +1441,7 @@ function handleResultSubmit(e) {
     else if (percentage >= 50) grade = 'D';
     
     const resultData = {
-        id: Date.now(),
+        id: generateId(),
         studentName: formData.get('studentName'),
         rollNumber: formData.get('rollNumber'),
         class: formData.get('class'),
@@ -1614,12 +1502,12 @@ function loadAdminResults() {
     container.innerHTML = results.map(result => `
         <div class="result-item">
             <div class="result-item-info">
-                <h5>${result.studentName} (${result.rollNumber})</h5>
-                <p>Class: ${result.class} | Exam: ${result.examType}</p>
-                <p>Total: ${result.totalMarks}/${result.maxMarks} | Percentage: ${result.percentage}% | Grade: ${result.grade}</p>
+                <h5>${result.student_name} (${result.roll_number})</h5>
+                <p>Class: ${result.class} | Exam: ${result.exam_type}</p>
+                <p>Total: ${result.total_marks}/${result.max_marks} | Percentage: ${result.percentage}% | Grade: ${result.grade}</p>
                 <div class="subjects-display">
                     ${result.subjects.map(subject => `
-                        <div class="subject-badge">${subject.name}: ${subject.marks}/${subject.totalMarks}</div>
+                        <div class="subject-badge">${subject.name}: ${subject.marks}/${subject.total_marks}</div>
                     `).join('')}
                 </div>
             </div>
@@ -1637,8 +1525,44 @@ function handleRoutineSubmit(e) {
     
     const formData = new FormData(e.target);
     const timeSlots = [];
+    const pdfFile = formData.get('pdfFile');
+    let pdfData = null;
     
-    // Get all time slot data
+    // Handle PDF file upload
+    if (pdfFile && pdfFile.size > 0) {
+        // Validate file size (10MB max)
+        if (pdfFile.size > 10 * 1024 * 1024) {
+            showMessage('routine-message', '❌ PDF file size must be less than 10MB', 'error');
+            return;
+        }
+        
+        // Validate file type
+        if (pdfFile.type !== 'application/pdf') {
+            showMessage('routine-message', '❌ Please upload a valid PDF file', 'error');
+            return;
+        }
+        
+        const reader = new FileReader();
+        
+        reader.onload = function(event) {
+            pdfData = {
+                name: pdfFile.name,
+                size: pdfFile.size,
+                type: pdfFile.type,
+                data: event.target.result // Base64 encoded PDF
+            };
+            
+            // Continue with routine creation after PDF is loaded
+            createRoutine(formData, timeSlots, pdfData);
+        };
+        
+        reader.readAsDataURL(pdfFile);
+    } else {
+        // Create routine without PDF
+        createRoutine(formData, timeSlots, pdfData);
+    }
+    
+    // Get all time slot data (parse before async operations)
     const startTimes = formData.getAll('startTime[]');
     const endTimes = formData.getAll('endTime[]');
     const subjects = formData.getAll('subject[]');
@@ -1659,20 +1583,25 @@ function handleRoutineSubmit(e) {
         showMessage('routine-message', 'Please add at least one time slot', 'error');
         return;
     }
-    
+}
+
+function createRoutine(formData, timeSlots, pdfData) {
     const routineData = {
-        id: Date.now(),
+        id: generateId(),
         class: formData.get('class'),
-        routineType: formData.get('routineType'),
+        routine_type: formData.get('routineType'),
         title: formData.get('title'),
-        timeSlots: timeSlots
+        description: formData.get('description') || '',
+        time_slots: timeSlots,
+        pdf_attachment: pdfData,
+        created_at: new Date().toISOString()
     };
     
     appState.data.routines.push(routineData);
     saveAppData();
     
-    showMessage('routine-message', '✅ Routine added successfully!', 'success');
-    e.target.reset();
+    showMessage('routine-message', '✅ Routine added successfully!' + (pdfData ? ' PDF attached.' : ''), 'success');
+    document.getElementById('routine-form').reset();
     
     // Reset time slots container
     document.getElementById('time-slots-container').innerHTML = `
@@ -1686,6 +1615,7 @@ function handleRoutineSubmit(e) {
     `;
     
     loadAdminRoutines();
+    updateStatistics();
     console.log('📅 New routine added:', routineData);
 }
 
@@ -1720,8 +1650,20 @@ function loadAdminRoutines() {
         <div class="routine-item">
             <div class="routine-item-info">
                 <h5>${routine.title}</h5>
-                <p>Class: ${routine.class} | Type: ${routine.routineType}</p>
-                <p>Time Slots: ${routine.timeSlots.length}</p>
+                <p>Class: ${routine.class} | Type: ${routine.routine_type}</p>
+                <p>Time Slots: ${routine.time_slots.length}</p>
+                ${routine.description ? `<p><strong>Description:</strong> ${routine.description}</p>` : ''}
+                ${routine.pdf_attachment ? `
+                    <div class="pdf-attachment">
+                        <span class="pdf-icon">📄</span>
+                        <span class="pdf-name">${routine.pdf_attachment.name}</span>
+                        <span class="pdf-size">(${(routine.pdf_attachment.size / 1024 / 1024).toFixed(2)} MB)</span>
+                        <button class="btn-download-pdf" onclick="downloadRoutinePDF(${routine.id})">
+                            📥 Download PDF
+                        </button>
+                    </div>
+                ` : ''}
+                ${routine.created_at ? `<p><small>Created: ${formatDate(routine.created_at)}</small></p>` : ''}
             </div>
             <div class="item-actions">
                 <button class="btn-edit" onclick="editRoutine(${routine.id})">✏️ Edit</button>
@@ -1729,6 +1671,45 @@ function loadAdminRoutines() {
             </div>
         </div>
     `).join('');
+}
+
+// PDF Download Function
+function downloadRoutinePDF(routineId) {
+    const routine = appState.data.routines.find(r => r.id === routineId);
+    if (!routine || !routine.pdf_attachment) {
+        alert('PDF not found for this routine');
+        return;
+    }
+    
+    try {
+        // Convert base64 back to blob
+        const base64Data = routine.pdf_attachment.data.split(',')[1]; // Remove data URL prefix
+        const binaryData = atob(base64Data);
+        const bytes = new Uint8Array(binaryData.length);
+        
+        for (let i = 0; i < binaryData.length; i++) {
+            bytes[i] = binaryData.charCodeAt(i);
+        }
+        
+        const blob = new Blob([bytes], { type: routine.pdf_attachment.type });
+        const url = URL.createObjectURL(blob);
+        
+        // Create download link
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = routine.pdf_attachment.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Clean up URL
+        URL.revokeObjectURL(url);
+        
+        console.log(`📥 Downloaded PDF: ${routine.pdf_attachment.name}`);
+    } catch (error) {
+        console.error('❌ Error downloading PDF:', error);
+        alert('Error downloading PDF. Please try again.');
+    }
 }
 
 function deleteResult(resultId) {
@@ -1749,18 +1730,18 @@ function editResult(resultId) {
     modal.innerHTML = `
         <div class="modal-content">
             <div class="modal-header">
-                <h3>✏️ Edit Result: ${result.studentName}</h3>
+                <h3>✏️ Edit Result: ${result.student_name}</h3>
                 <button onclick="closeModal()" class="close-btn">✕</button>
             </div>
             <form id="edit-result-form">
                 <div class="form-row">
                     <div class="form-group">
                         <label>Student Name</label>
-                        <input type="text" name="studentName" value="${result.studentName}" required>
+                        <input type="text" name="studentName" value="${result.student_name}" required>
                     </div>
                     <div class="form-group">
                         <label>Roll Number</label>
-                        <input type="text" name="rollNumber" value="${result.rollNumber}" required>
+                        <input type="text" name="rollNumber" value="${result.roll_number}" required>
                     </div>
                 </div>
                 <div class="form-row">
@@ -1792,10 +1773,10 @@ function editResult(resultId) {
                     <div class="form-group">
                         <label>Exam Type</label>
                         <select name="examType" required>
-                            <option value="First Term" ${result.examType === 'First Term' ? 'selected' : ''}>First Term</option>
-                            <option value="Mid Term" ${result.examType === 'Mid Term' ? 'selected' : ''}>Mid Term</option>
-                            <option value="Final Term" ${result.examType === 'Final Term' ? 'selected' : ''}>Final Term</option>
-                            <option value="Unit Test" ${result.examType === 'Unit Test' ? 'selected' : ''}>Unit Test</option>
+                            <option value="First Term" ${result.exam_type === 'First Term' ? 'selected' : ''}>First Term</option>
+                            <option value="Mid Term" ${result.exam_type === 'Mid Term' ? 'selected' : ''}>Mid Term</option>
+                            <option value="Final Term" ${result.exam_type === 'Final Term' ? 'selected' : ''}>Final Term</option>
+                            <option value="Unit Test" ${result.exam_type === 'Unit Test' ? 'selected' : ''}>Unit Test</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -1884,15 +1865,15 @@ function editResult(resultId) {
         const percentage = maxMarks > 0 ? Math.round((totalMarks / maxMarks) * 100) : 0;
         
         // Update result data
-        result.studentName = formData.get('studentName');
-        result.rollNumber = formData.get('rollNumber');
+        result.student_name = formData.get('studentName');
+        result.roll_number = formData.get('rollNumber');
         result.class = formData.get('class');
         result.section = formData.get('section');
-        result.examType = formData.get('examType');
+        result.exam_type = formData.get('examType');
         result.grade = formData.get('grade');
         result.subjects = subjects;
-        result.totalMarks = totalMarks;
-        result.maxMarks = maxMarks;
+        result.total_marks = totalMarks;
+        result.max_marks = maxMarks;
         result.percentage = percentage;
 
         saveAppData();
@@ -1900,7 +1881,7 @@ function editResult(resultId) {
         updateStatistics();
         closeModal();
         
-        console.log(`✅ Result updated: ${result.studentName}`);
+        console.log(`✅ Result updated: ${result.student_name}`);
     });
 }
 
@@ -2063,7 +2044,7 @@ function parseCsvData(csvText) {
             if (result.subjects.length > 0) {
                 // Calculate totals
                 const totalObtained = result.subjects.reduce((sum, subject) => sum + subject.marks, 0);
-                const maxTotal = result.subjects.reduce((sum, subject) => sum + subject.totalMarks, 0);
+                const maxTotal = result.subjects.reduce((sum, subject) => sum + subject.total_marks, 0);
                 const percentage = Math.round((totalObtained / maxTotal) * 100);
                 
                 // Calculate grade
@@ -2074,8 +2055,8 @@ function parseCsvData(csvText) {
                 else if (percentage >= 60) grade = 'C';
                 else if (percentage >= 50) grade = 'D';
                 
-                result.totalMarks = totalObtained;
-                result.maxMarks = maxTotal;
+                result.total_marks = totalObtained;
+                result.max_marks = maxTotal;
                 result.percentage = percentage;
                 result.grade = grade;
                 result.id = Date.now() + i; // Unique ID
@@ -2142,12 +2123,12 @@ function displayCsvPreview() {
         const subjectsText = result.subjects.map(s => `${s.name}: ${s.marks}/${s.totalMarks}`).join(', ');
         tableHTML += `
             <tr>
-                <td>${result.studentName}</td>
-                <td>${result.rollNumber}</td>
+                <td>${result.student_name}</td>
+                <td>${result.roll_number}</td>
                 <td>${result.class}</td>
-                <td>${result.examType}</td>
+                <td>${result.exam_type}</td>
                 <td title="${subjectsText}">${result.subjects.length} subjects</td>
-                <td>${result.totalMarks}/${result.maxMarks}</td>
+                <td>${result.total_marks}/${result.max_marks}</td>
                 <td>${result.percentage}%</td>
                 <td><strong>${result.grade}</strong></td>
             </tr>
