@@ -1,4 +1,631 @@
-patel@email.com',
+/**
+ * KSBA School Management System - Complete JavaScript Application
+ * A fully functional web app with local storage and Google Sheets integration
+ */
+
+// Application Configuration
+const CONFIG = {
+    ADMIN_PASSWORD: 'alamgir@8371',
+    STORAGE_KEY: 'ksba_school_data',
+    // Supabase Configuration
+    SUPABASE_URL: 'https://cmqfwdpizqwasbmlknbf.supabase.co', // Your Supabase project URL
+    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtcWZ3ZHBpenF3YXNibWxrbmJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMDkzMjYsImV4cCI6MjA3OTc4NTMyNn0.FO31lu98w8kUSAzOq-suc_AOWUrXZq_m9xf-BiVUvf8', // Your Supabase anonymous key
+    USE_SUPABASE: true, // Set to true after Supabase setup
+    // Legacy Google Sheets (backup option)
+    GOOGLE_SHEETS_URL: 'https://script.google.com/macros/s/AKfycbwVh6xtLjCfDD2bFn1C_x5Y0WFIajOwrz7Cbl6S-GLVB2kU38qxqPLr0iejPpEsYvpRXA/exec',
+    GOOGLE_SHEET_ID: '1qt_Yh2Qrts2LDxVcKkmsBECGraWCLsN6gbd49_9nW-s',
+    USE_CLOUD_STORAGE: false,
+    VERSION: '1.0.0'
+};
+
+// Application State
+let appState = {
+    currentPage: 'home',
+    isAdminLoggedIn: false,
+    currentAdminSection: 'overview',
+    data: {
+        students: [],
+        admissions: [],
+        announcements: [],
+        results: [],
+        routines: []
+    }
+};
+
+// Supabase Client (will be initialized when needed)
+let supabase = null;
+
+// Initialize Supabase
+function initializeSupabase() {
+    if (CONFIG.USE_SUPABASE && CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY) {
+        try {
+            // Use the global supabase object from CDN
+            supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+            console.log('🟢 Supabase client initialized');
+            return true;
+        } catch (error) {
+            console.error('❌ Failed to initialize Supabase:', error);
+            return false;
+        }
+    }
+    return false;
+}
+
+// Initialize Application
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🏫 KSBA School Management System v' + CONFIG.VERSION);
+    
+    // Initialize Supabase if enabled
+    if (CONFIG.USE_SUPABASE) {
+        initializeSupabase();
+    }
+    
+    // Load data from localStorage or Supabase
+    loadAppData();
+    
+    // Initialize event listeners
+    initializeEventListeners();
+    
+    // Load initial data
+    loadInitialData();
+    
+    // Add debug info
+    console.log('📊 Current app state:', appState);
+    console.log('👥 Students loaded:', appState.data.students.length);
+    console.log('📝 Admissions loaded:', appState.data.admissions.length);
+    console.log('🟢 Supabase enabled:', CONFIG.USE_SUPABASE);
+    
+    // Show home page
+    showPage('home');
+    
+    console.log('✅ Application initialized successfully');
+});
+
+// Data Management Functions
+function loadAppData() {
+    try {
+        if (CONFIG.USE_SUPABASE) {
+            // Try Supabase first
+            loadFromSupabase();
+        } else if (CONFIG.USE_CLOUD_STORAGE) {
+            // Try Google Sheets next
+            loadFromCloud();
+        } else {
+            // Load from localStorage
+            const savedData = localStorage.getItem(CONFIG.STORAGE_KEY);
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                appState.data = { ...appState.data, ...parsedData };
+                // Migrate old data format to new format
+                appState.data = migrateDataFormat(appState.data);
+                console.log('📁 Data loaded and migrated from localStorage');
+            }
+        }
+    } catch (error) {
+        console.error('❌ Error loading data:', error);
+        // Fallback to localStorage
+        const savedData = localStorage.getItem(CONFIG.STORAGE_KEY);
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            appState.data = { ...appState.data, ...parsedData };
+            // Migrate old data format to new format
+            appState.data = migrateDataFormat(appState.data);
+            console.log('📁 Data loaded and migrated from localStorage (fallback)');
+        }
+    }
+}
+
+function saveAppData() {
+    try {
+        // Always save to localStorage as backup
+        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(appState.data));
+        console.log('💾 Data saved to localStorage');
+        
+        // Try cloud sync based on configuration
+        if (CONFIG.USE_SUPABASE) {
+            saveToSupabase();
+        } else if (CONFIG.USE_CLOUD_STORAGE) {
+            saveToCloud();
+        }
+    } catch (error) {
+        console.error('❌ Error saving data:', error);
+    }
+}
+
+// Supabase Functions
+async function loadFromSupabase() {
+    try {
+        console.log('🟢 Loading data from Supabase...');
+        
+        if (!supabase) {
+            throw new Error('Supabase client not initialized');
+        }
+        
+        // Load all data from Supabase tables
+        const { data: students, error: studentsError } = await supabase.from('students').select('*');
+        const { data: admissions, error: admissionsError } = await supabase.from('admissions').select('*');
+        const { data: announcements, error: announcementsError } = await supabase.from('announcements').select('*');
+        const { data: results, error: resultsError } = await supabase.from('results').select('*');
+        const { data: routines, error: routinesError } = await supabase.from('routines').select('*');
+        
+        // Log specific errors for debugging
+        if (studentsError) console.error('Students load error:', studentsError);
+        if (admissionsError) console.error('Admissions load error:', admissionsError);
+        if (announcementsError) console.error('Announcements load error:', announcementsError);
+        if (resultsError) console.error('Results load error:', resultsError);
+        if (routinesError) console.error('Routines load error:', routinesError);
+        
+        // Check if tables exist by looking for specific errors
+        const tableNotFoundErrors = studentsError?.message?.includes('does not exist') ||
+                                  admissionsError?.message?.includes('does not exist') ||
+                                  announcementsError?.message?.includes('does not exist') ||
+                                  resultsError?.message?.includes('does not exist') ||
+                                  routinesError?.message?.includes('does not exist');
+        
+        if (tableNotFoundErrors) {
+            console.warn('⚠️ Some tables do not exist. Please run the SQL setup in Supabase.');
+            showMessage('cloud-status', '⚠️ Tables missing - run SQL setup', 'warning');
+            return; // Exit early, don't update app state
+        }
+        
+        if (studentsError || admissionsError || announcementsError || resultsError || routinesError) {
+            throw new Error('Error loading data from Supabase');
+        }
+        
+        // Update app state with Supabase data
+        const supabaseData = {
+            students: students || [],
+            admissions: admissions || [],
+            announcements: announcements || [],
+            results: results || [],
+            routines: routines || []
+        };
+        
+        // Migrate data format to ensure consistency
+        appState.data = migrateDataFormat(supabaseData);
+        
+        // Also update localStorage as backup
+        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(appState.data));
+        
+        console.log('☁️ Data loaded from Supabase successfully');
+        showMessage('cloud-status', '🟢 Connected to Supabase', 'success');
+        
+    } catch (error) {
+        console.error('❌ Error loading from Supabase:', error);
+        showMessage('cloud-status', '⚠️ Supabase connection failed', 'warning');
+        
+        // Fallback to localStorage
+        const savedData = localStorage.getItem(CONFIG.STORAGE_KEY);
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            appState.data = { ...appState.data, ...parsedData };
+            // Migrate data format to ensure consistency
+            appState.data = migrateDataFormat(appState.data);
+            console.log('📁 Fallback to localStorage with migration');
+        }
+    }
+}
+
+// Data Migration Function - converts old camelCase to snake_case
+function migrateDataFormat(data) {
+    const migratedData = {
+        students: [],
+        admissions: [],
+        announcements: [],
+        results: [],
+        routines: []
+    };
+    
+    // Migrate students
+    if (data.students && Array.isArray(data.students)) {
+        migratedData.students = data.students.map(student => {
+            const migratedStudent = {
+                ...student,
+                // Convert camelCase to snake_case if needed
+                roll_number: student.roll_number || student.rollNumber,
+                admission_date: student.admission_date || student.admissionDate,
+                original_admission_id: student.original_admission_id || student.originalAdmissionId,
+            };
+            // Completely remove old camelCase fields
+            delete migratedStudent.rollNumber;
+            delete migratedStudent.admissionDate;
+            delete migratedStudent.originalAdmissionId;
+            return migratedStudent;
+        });
+    }
+    
+    // Migrate admissions
+    if (data.admissions && Array.isArray(data.admissions)) {
+        migratedData.admissions = data.admissions.map(admission => {
+            const migratedAdmission = {
+                ...admission,
+                // Convert camelCase to snake_case if needed
+                class_applied: admission.class_applied || admission.class,
+                application_date: admission.application_date || admission.applicationDate,
+            };
+            // Completely remove old camelCase fields
+            delete migratedAdmission.class;
+            delete migratedAdmission.applicationDate;
+            return migratedAdmission;
+        });
+    }
+    
+    // Migrate results
+    if (data.results && Array.isArray(data.results)) {
+        migratedData.results = data.results.map(result => {
+            const migratedResult = {
+                ...result,
+                // Convert camelCase to snake_case if needed
+                student_name: result.student_name || result.studentName,
+                roll_number: result.roll_number || result.rollNumber,
+                exam_type: result.exam_type || result.examType,
+                total_marks: result.total_marks || result.totalMarks,
+                max_marks: result.max_marks || result.maxMarks,
+                // Migrate subjects array
+                subjects: result.subjects ? result.subjects.map(subject => {
+                    const migratedSubject = {
+                        ...subject,
+                        total_marks: subject.total_marks || subject.totalMarks
+                    };
+                    delete migratedSubject.totalMarks;
+                    return migratedSubject;
+                }) : []
+            };
+            // Remove old camelCase fields
+            delete migratedResult.studentName;
+            delete migratedResult.rollNumber;
+            delete migratedResult.examType;
+            delete migratedResult.totalMarks;
+            delete migratedResult.maxMarks;
+            return migratedResult;
+        });
+    }
+    
+    // Migrate routines
+    if (data.routines && Array.isArray(data.routines)) {
+        migratedData.routines = data.routines.map(routine => {
+            const migratedRoutine = {
+                ...routine,
+                // Convert camelCase to snake_case if needed
+                routine_type: routine.routine_type || routine.routineType,
+                time_slots: routine.time_slots || routine.timeSlots,
+            };
+            // Remove old camelCase fields
+            delete migratedRoutine.routineType;
+            delete migratedRoutine.timeSlots;
+            return migratedRoutine;
+        });
+    }
+    
+    // Copy announcements (no migration needed)
+    if (data.announcements && Array.isArray(data.announcements)) {
+        migratedData.announcements = data.announcements;
+    }
+    
+    // Update the app state with migrated data
+    appState.data = migratedData;
+    
+    // Log migration results for debugging
+    console.log('🔄 Data migration completed');
+    console.log('📊 Migration summary:', {
+        students: migratedData.students.length,
+        admissions: migratedData.admissions.length,
+        results: migratedData.results.length,
+        routines: migratedData.routines.length,
+        announcements: migratedData.announcements.length
+    });
+    
+    return migratedData;
+}
+
+// Duplicate Removal Functions
+function removeDuplicateAdmissions(admissions) {
+    const unique = [];
+    const seen = new Set();
+    
+    for (const admission of admissions) {
+        const key = `${admission.name}_${admission.class_applied}_${admission.parent_contact}_${admission.application_date}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(admission);
+        }
+    }
+    
+    console.log(`🔄 Removed ${admissions.length - unique.length} duplicate admissions`);
+    return unique;
+}
+
+function removeDuplicateStudents(students) {
+    const unique = [];
+    const seen = new Set();
+    
+    for (const student of students) {
+        const key = `${student.roll_number}_${student.name}_${student.class}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(student);
+        }
+    }
+    
+    console.log(`🔄 Removed ${students.length - unique.length} duplicate students`);
+    return unique;
+}
+
+function removeDuplicateResults(results) {
+    const unique = [];
+    const seen = new Set();
+    
+    for (const result of results) {
+        const key = `${result.student_name}_${result.roll_number}_${result.class}_${result.exam_type}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(result);
+        }
+    }
+    
+    console.log(`🔄 Removed ${results.length - unique.length} duplicate results`);
+    return unique;
+}
+
+function removeDuplicateRoutines(routines) {
+    const unique = [];
+    const seen = new Set();
+    
+    for (const routine of routines) {
+        const key = `${routine.class}_${routine.routine_type}_${routine.title}`;
+        if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(routine);
+        }
+    }
+    
+    console.log(`🔄 Removed ${routines.length - unique.length} duplicate routines`);
+    return unique;
+}
+
+// Individual Row Insertion Function to avoid PostgreSQL conflicts
+async function insertRowsIndividually(tableName, rows) {
+    if (!rows || rows.length === 0) {
+        return { data: [], error: null };
+    }
+    
+    console.log(`🔄 Inserting ${rows.length} rows into ${tableName} individually`);
+    
+    const allData = [];
+    let hasError = false;
+    let lastError = null;
+    
+    for (let i = 0; i < rows.length; i++) {
+        try {
+            const { data, error } = await supabase.from(tableName).upsert([rows[i]], { onConflict: 'id' });
+            
+            if (error) {
+                console.error(`❌ Error inserting row ${i + 1} into ${tableName}:`, error);
+                lastError = error;
+                hasError = true;
+            } else if (data && data.length > 0) {
+                allData.push(...data);
+            }
+        } catch (err) {
+            console.error(`❌ Exception inserting row ${i + 1} into ${tableName}:`, err);
+            lastError = err;
+            hasError = true;
+        }
+    }
+    
+    console.log(`✅ Successfully inserted ${allData.length}/${rows.length} rows into ${tableName}`);
+    
+    return {
+        data: allData,
+        error: hasError ? lastError : null
+    };
+}
+
+async function saveToSupabase() {
+    try {
+        console.log('🟢 Saving data to Supabase...');
+        
+        if (!supabase) {
+            throw new Error('Supabase client not initialized');
+        }
+        
+        // Migrate old data format to new format before saving
+        const migratedData = migrateDataFormat(appState.data);
+        
+        // Remove duplicates before sending to Supabase
+        const uniqueAdmissions = removeDuplicateAdmissions(migratedData.admissions || []);
+        const uniqueStudents = removeDuplicateStudents(migratedData.students || []);
+        const uniqueResults = removeDuplicateResults(migratedData.results || []);
+        const uniqueRoutines = removeDuplicateRoutines(migratedData.routines || []);
+        
+        // Save all data to Supabase tables with individual insertion to avoid conflicts
+        const { data: studentsData, error: studentsError } = await insertRowsIndividually('students', uniqueStudents);
+        const { data: admissionsData, error: admissionsError } = await insertRowsIndividually('admissions', uniqueAdmissions);
+        const { data: announcementsData, error: announcementsError } = await insertRowsIndividually('announcements', migratedData.announcements || []);
+        const { data: resultsData, error: resultsError } = await insertRowsIndividually('results', uniqueResults);
+        const { data: routinesData, error: routinesError } = await insertRowsIndividually('routines', uniqueRoutines);
+        
+        // Log specific errors for debugging
+        if (studentsError) console.error('Students error:', studentsError);
+        if (admissionsError) console.error('Admissions error:', admissionsError);
+        if (announcementsError) console.error('Announcements error:', announcementsError);
+        if (resultsError) console.error('Results error:', resultsError);
+        if (routinesError) console.error('Routines error:', routinesError);
+        
+        if (studentsError || admissionsError || announcementsError || resultsError || routinesError) {
+            const errorDetails = {
+                students: studentsError,
+                admissions: admissionsError,
+                announcements: announcementsError,
+                results: resultsError,
+                routines: routinesError
+            };
+            throw new Error(`Supabase errors: ${JSON.stringify(errorDetails)}`);
+        }
+        
+        console.log('☁️ Data saved to Supabase successfully');
+        showMessage('cloud-status', '✅ Synced to Supabase', 'success');
+        
+    } catch (error) {
+        console.error('❌ Error saving to Supabase:', error);
+        showMessage('cloud-status', '⚠️ Supabase sync failed', 'warning');
+        
+        // Fallback: ensure data is at least saved locally
+        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(appState.data));
+        console.log('💾 Data saved to localStorage as fallback');
+    }
+}
+
+// Cloud Storage Functions
+async function loadFromCloud() {
+    try {
+        const response = await fetch(`${CONFIG.GOOGLE_SHEETS_URL}?action=getData`);
+        if (response.ok) {
+            const cloudData = await response.json();
+            if (cloudData && Object.keys(cloudData).length > 0) {
+                appState.data = { ...appState.data, ...cloudData };
+                console.log('☁️ Data loaded from cloud');
+                // Also update localStorage as backup
+                localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(appState.data));
+            }
+        }
+    } catch (error) {
+        console.error('❌ Error loading from cloud:', error);
+    }
+}
+
+async function saveToCloud() {
+    try {
+        console.log('☁️ Attempting to save to cloud:', CONFIG.GOOGLE_SHEETS_URL);
+        
+        const response = await fetch(CONFIG.GOOGLE_SHEETS_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'saveData',
+                data: appState.data
+            })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            console.log('☁️ Data saved to cloud successfully:', result);
+            showMessage('cloud-status', '✅ Synced to cloud', 'success');
+        } else {
+            console.error('❌ Failed to save to cloud, status:', response.status);
+            const errorText = await response.text();
+            console.error('❌ Error response:', errorText);
+            showMessage('cloud-status', '⚠️ Cloud sync failed, using local storage', 'warning');
+        }
+    } catch (error) {
+        console.error('❌ Error saving to cloud:', error);
+        showMessage('cloud-status', '⚠️ Cloud sync unavailable, using local storage', 'warning');
+        
+        // Fallback: ensure data is at least saved locally
+        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(appState.data));
+        console.log('💾 Data saved to localStorage as fallback');
+    }
+}
+
+function loadInitialData() {
+    if (appState.data.announcements.length === 0) {
+        appState.data.announcements = [
+            {
+                id: 1,
+                title: 'Welcome to New Academic Year 2025',
+                content: 'Classes will commence from January 15, 2025. All students are requested to report on time with proper uniform and books.',
+                date: '2024-12-28',
+                status: 'active'
+            },
+            {
+                id: 2,
+                title: 'Annual Sports Day',
+                content: 'Our annual sports day will be held on February 14, 2025. Participation is mandatory for all students.',
+                date: '2024-12-25',
+                status: 'active'
+            }
+        ];
+    }
+
+    // Add sample students if none exist (for testing)
+    if (appState.data.students.length === 0) {
+        appState.data.students = [
+            {
+                id: 1001,
+                name: 'Aarav Sharma',
+                roll_number: 'KS25001',
+                class: 'Class 5',
+                section: 'A',
+                age: 11,
+                parent_name: 'Rajesh Sharma',
+                parent_contact: '+91-9876543210',
+                parent_email: 'rajesh.sharma@email.com',
+                address: '123 Main Street, Delhi',
+                admission_date: '2024-01-15',
+                status: 'active',
+                original_admission_id: 1
+            },
+            {
+                id: 1002,
+                name: 'Priya Patel',
+                roll_number: 'KS25002',
+                class: 'Class 6',
+                section: 'B',
+                age: 12,
+                parent_name: 'Suresh Patel',
+                parent_contact: '+91-9876543211',
+                parent_email: 'suresh.patel@email.com',
+                address: '456 Park Avenue, Mumbai',
+                admission_date: '2024-01-16',
+                status: 'active',
+                original_admission_id: 2
+            }
+        ];
+        
+        console.log('📚 Sample students added for testing');
+        saveAppData();
+    }
+
+    // Add sample admissions if none exist (for testing)
+    if (appState.data.admissions.length === 0) {
+        appState.data.admissions = [
+            {
+                id: 2001,
+                name: 'Rohit Kumar',
+                age: 10,
+                class: 'Class 4',
+                class_applied: 'Class 4',
+                parent_name: 'Sunil Kumar',
+                parent_contact: '+91-9876543212',
+                parent_email: 'sunil.kumar@email.com',
+                address: '789 School Road, Bangalore',
+                application_date: '2024-12-20',
+                status: 'pending'
+            },
+            {
+                id: 2002,
+                name: 'Anita Singh',
+                age: 13,
+                class: 'Class 7',
+                class_applied: 'Class 7',
+                parent_name: 'Ramesh Singh',
+                parent_contact: '+91-9876543213',
+                parent_email: 'ramesh.singh@email.com',
+                address: '321 Garden Street, Chennai',
+                application_date: '2024-12-22',
+                status: 'approved'
+            },
+            {
+                id: 2003,
+                name: 'Vikash Patel',
+                age: 8,
+                class: 'Class 2',
+                class_applied: 'Class 2',
+                parent_name: 'Mahesh Patel',
+                parent_contact: '+91-9876543214',
+                parent_email: 'mahesh.patel@email.com',
                 address: '654 Market Lane, Pune',
                 application_date: '2024-12-25',
                 status: 'rejected'
