@@ -6,6 +6,8 @@
     <title>KSBA School Management System</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="app-container">
@@ -13,9 +15,13 @@
         <header class="header">
             <div class="header-content">
                 <div class="logo">
-                    <h1>🏫 KSBA School</h1>
-                    <p>Excellence in Education</p>
+                    <img src="logo.png" alt="KSBA School Logo" class="logo-img">
+                    <div class="logo-text">
+                        <h1>KSBA School</h1>
+                        <p>Excellence in Education</p>
+                    </div>
                 </div>
+                <div id="cloud-status" class="cloud-status" style="display: none;"></div>
                 <nav class="nav">
                     <button class="nav-btn active" data-page="home">🏠 Home</button>
                     <button class="nav-btn" data-page="admission">📝 Admission</button>
@@ -43,10 +49,7 @@
                             </div>
                         </div>
                         <div class="hero-image">
-                            <div class="school-image-placeholder">
-                                <div class="image-icon">🏫</div>
-                                <p>KSBA School Campus</p>
-                            </div>
+                            <img src="campus.png" alt="KSBA School Campus" class="campus-image">
                         </div>
                     </div>
                     
@@ -657,6 +660,17 @@
                                     <div class="form-group">
                                         <label for="routine-title">Title *</label>
                                         <input type="text" id="routine-title" name="title" placeholder="e.g., Class 10 Daily Routine" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="routine-description">Description</label>
+                                        <textarea id="routine-description" name="description" placeholder="Enter routine description or additional information..." rows="3"></textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="routine-pdf">PDF Attachment (Optional)</label>
+                                        <input type="file" id="routine-pdf" name="pdfFile" accept=".pdf" class="file-input">
+                                        <small class="file-help">Upload a PDF file for detailed routine (Max 10MB)</small>
                                     </div>
 
                                     <!-- Time Slots -->
